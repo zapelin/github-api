@@ -38,6 +38,21 @@ public class AppTest extends AbstractGitHubApiTestBase {
         getUser().getRepository(targetName).delete();
     }
 
+    @Test
+    public void testRepositoryWithAutoInitializationCRUD() throws IOException {
+        String name = "github-api-test-autoinit";
+        deleteRepository(name);
+        GHRepository r = gitHub.createRepository(name)
+                .description("a test repository for auto init")
+                .homepage("http://github-api.kohsuke.org/")
+                .autoInit(true).create();
+        r.enableIssueTracker(false);
+        r.enableDownloads(false);
+        r.enableWiki(false);
+        assertNotNull(r.getReadme());
+        getUser().getRepository(name).delete();
+    }
+
     private void deleteRepository(final String name) throws IOException {
         GHRepository repository = getUser().getRepository(name);
         if(repository != null) {
@@ -776,7 +791,7 @@ public class AppTest extends AbstractGitHubApiTestBase {
         assertTrue(actual.contains("href=\"https://github.com/kohsuke\""));
         assertTrue(actual.contains("href=\"https://github.com/kohsuke/github-api/pull/1\""));
         assertTrue(actual.contains("class=\"user-mention\""));
-        assertTrue(actual.contains("class=\"issue-link\""));
+        assertTrue(actual.contains("class=\"issue-link "));
         assertTrue(actual.contains("to fix issue"));
     }
 

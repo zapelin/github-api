@@ -102,7 +102,7 @@ public class GHCommit {
         }
 
         /**
-         * "modified", "added", or "deleted"
+         * "modified", "added", or "removed"
          */
         public String getStatus() {
             return status;
@@ -178,7 +178,8 @@ public class GHCommit {
     User author,committer;
 
 
-    public ShortInfo getCommitShortInfo() {
+    public ShortInfo getCommitShortInfo() throws IOException {
+        populate();
         return commit;
     }
 

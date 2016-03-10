@@ -410,17 +410,28 @@ public class GitHub {
     /**
      * Creates a new repository.
      *
-     * To create a repository in an organization, see
-     * {@link GHOrganization#createRepository(String, String, String, GHTeam, boolean)}
-     *
      * @return
      *      Newly created repository.
+     * @deprecated
+     *      Use {@link #createRepository(String)} that uses a builder pattern to let you control every aspect.
      */
     public GHRepository createRepository(String name, String description, String homepage, boolean isPublic) throws IOException {
-        Requester requester = new Requester(this)
-                .with("name", name).with("description", description).with("homepage", homepage)
-                .with("public", isPublic ? 1 : 0);
-        return requester.method("POST").to("/user/repos", GHRepository.class).wrap(this);
+        return createRepository(name).description(description).homepage(homepage).private_(!isPublic).create();
+    }
+
+    /**
+     * Starts a builder that creates a new repository.
+     *
+     * <p>
+     * You use the returned builder to set various properties, then call {@link GHCreateRepositoryBuilder#create()}
+     * to finally createa repository.
+     *
+     * <p>
+     * To create a repository in an organization, see
+     * {@link GHOrganization#createRepository(String, String, String, GHTeam, boolean)}
+     */
+    public GHCreateRepositoryBuilder createRepository(String name) {
+        return new GHCreateRepositoryBuilder(this,"/user/repos",name);
     }
 
     /**
